@@ -12,6 +12,13 @@ if(cluster.isMaster) {
    for(let  i = 0; i < numCPUs; i++) {
       cluster.fork();
    }
+
+   // in case a worker dies, we create a new one, so app will never crash
+   cluster.on('exit', worker => {
+      console.log('starting a new worker');
+      cluster.fork();
+   });
+
 } else {
    // render server.js here
    http.createServer((req, res) => {
